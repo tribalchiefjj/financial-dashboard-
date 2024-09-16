@@ -11,6 +11,7 @@ import Link from 'next/link';
 import { Button } from '@/app/ui/button';
 import { updateInvoice, State } from '@/app/lib/actions';
 import { useActionState } from 'react';
+
 export default function EditInvoiceForm({
   invoice,
   customers,
@@ -18,12 +19,20 @@ export default function EditInvoiceForm({
   invoice: InvoiceForm;
   customers: CustomerField[];
 }) {
-  const initialState: State = { message: null, errors: {} };
-  const updateInvoiceWithId = updateInvoice.bind(null, invoice.id);
-  const [state, formAction] = useActionState(updateInvoiceWithId, initialState);
+  // Define the initial state
+  const initialState: State = { message: '', errors: {} };
+
+  // Bind the `updateInvoice` function to the invoice ID
+  const updateInvoiceWithId = (prevState: State, formData: FormData) => {
+    return updateInvoice(invoice.id, prevState, formData);
+  };
+
+  // Use `useActionState` with the correct function signature
+  const [, formAction] = useActionState(updateInvoiceWithId, initialState);
+
   return (
     <form action={formAction}>
-            <div className="rounded-md bg-gray-50 p-4 md:p-6">
+      <div className="rounded-md bg-gray-50 p-4 md:p-6">
         {/* Customer Name */}
         <div className="mb-4">
           <label htmlFor="customer" className="mb-2 block text-sm font-medium">
